@@ -1,0 +1,33 @@
+[project]
+name = "personal-study-optimizer"
+version = "1.0.0"
+description = "Personal Study Optimizer with LangGraph to generate flashcards"
+readme = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+    "langgraph",
+    "langchain-core",
+    "langchain-openai",
+    "python-dotenv",
+    "requests",
+    "langgraph-cli>=0.4.27",
+    "mcp",
+    "graphifyy",
+    "fastapi",
+    "uvicorn",
+]
+
+[project.optional-dependencies]
+dev = [
+    "langgraph-cli[inmem]",
+    "pytest",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
