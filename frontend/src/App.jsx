@@ -154,9 +154,9 @@ function App() {
         <section className="mt-6 grid gap-4 rounded-xl border border-slate-800 bg-slate-900 p-4 md:grid-cols-[180px_1fr]">
           <div className="flex flex-col items-center gap-3">
             <WizardSprite mood={mood} />
-            <p className="text-center text-xs text-indigo-200">Aurex, your wise tutor mage</p>
+            <p className="text-center text-xs text-indigo-200">Aurelius, your wise tutor mage</p>
           </div>
-          <div className="rounded-lg border border-indigo-800 bg-indigo-950/30 p-4">
+          <div className="rpg-bubble">
             <p className="text-sm text-indigo-100">{bubbleText}</p>
           </div>
         </section>
