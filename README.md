@@ -230,3 +230,57 @@ Current tests cover deck validation behavior.
   - add `TAVILY_API_KEY` for better web retrieval
 - frequent validation retries
   - expected occasionally; deterministic validator will force exact format/split
+
+
+## Next steps
+1. Create a feature of uploading study files and then generate those flashcards.
+2. Create a feature of settings for the user to customize their experience by:
+    - Setting the number of flashcards to generate
+    - Setting the type of flashcards to generate (academic, practical, etc.)
+    - Setting the difficulty level of the flashcards
+    - Setting the language of the flashcards
+3. Develop a AI Tutor that can help the user learn the material through conversations and quizzes using the best learning techniques combined:
+    - Simple understanding, avoiding memorizing.
+    - Active recovery.
+    - Spaced repetition.
+    - Transform knowledge in questions.
+    - Apply the knowledge in real scenarios.
+    - Teach without looking.
+    - Similar connections between concepts and analogies.
+
+### Efficient protocol to unite everything:
+
+**60-minute session**
+
+#### Recovery (0-5 min)
+
+What do I remember from the last session?
+Write without consulting.
+
+#### Learning (5-25 min)
+
+- Study a small amount.
+- Understand mechanisms and relationships.
+- Don't try to absorb an entire chapter.
+
+#### Recovery (25-40 min)
+
+- Close everything.
+- Explain the memory content.
+- Ask yourself questions.
+- Solve a few problems.
+
+#### Correction (40-50 min)
+
+- Consult the material.
+- Identify exactly what you got wrong or forgot.
+- Correct.
+
+#### Application (50-60 min)
+
+- Solve a new problem.
+- Explain the concept.
+- Create an example.
+- Relate it to something you already know.
+
+Then do **short reviews at 1, 3, 7, 14, 30 and 60+ days.**
