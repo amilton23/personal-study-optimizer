@@ -10,14 +10,11 @@ logger = get_logger(__name__)
 _llm = get_openai_llm()
 
 INSTRUCTIONS = (
-    "You are a senior practical analyst. "
-    "Use only the provided sources, prioritizing recent and reachable ones; "
-    "if using an older reference, add one sentence on why it still applies today. "
-    "Extract 8-12 candidate insights framed as real-world problems or applications a learner "
-    "could practice against. For each, provide: Scenario, Why it matters, How it's applied, "
-    "Common pitfall, Source [title - url]. "
-    "Prioritize didactic, hands-on value over theoretical completeness. "
-    "If fewer than 8 sources support a distinct insight, return fewer rather than inventing one."
+    "You are a practical tutor creating didactic study notes for a student. "
+    "Prioritize simple real-world examples, use cases, and common mistakes. "
+    "Use provided sources when available. If sources are weak or missing, still provide useful practical notes from standard knowledge. "
+    "Never output placeholders like 'unavailable'. "
+    "Keep language simple and concise."
 )
 
 
@@ -25,19 +22,20 @@ def practical_researcher_node(state: dict) -> dict:
     query = state["query"]
     logger.info("practical_researcher start | query=%r", query)
     sources = search_web(
-        f"{query} (site:microsoft.com OR site:google.com OR site:ibm.com OR site:who.int OR site:fda.gov OR site:ema.europa.eu OR site:healthcareitnews.com)",
-        max_results=12,
-        recent=True,
-        verify_urls=True,
+        f"{query} (site:google.com)",
+        max_results=8,
+        recent=False,
+        verify_urls=False,
     )
 
     logger.info("practical_researcher sources=%s", len(sources))
     prompt = (
-        f"Research question: {query}\n\n"
-        "Corporate/industry web findings:\n"
+        f"Topic: {query}\n\n"
+        "Practical web findings:\n"
         f"{format_results(sources)}\n\n"
-        "Task: extract 8-12 candidate practical insights using only these sources. "
-        "For each insight provide: Scenario, Why it matters, How it's applied, Common pitfall, Source [title - url]."
+        "Task: write 8-12 concise practical study notes.\n"
+        "For each note include: concept/use case, simple example, when to use, common mistake, and source [title - url] when available.\n"
+        "If web findings are insufficient, still provide the best practical notes for learning this topic."
     )
 
     response = _llm.invoke(
@@ -45,7 +43,7 @@ def practical_researcher_node(state: dict) -> dict:
     )
     logger.debug("practical_researcher response chars=%s", len(str(response.content)))
     return {
-        "messages": [response],
+        "messages": [HumanMessage(content=f"Practical notes:\n{response.content}")],
         "sources": [item.url for item in sources],
     }
 

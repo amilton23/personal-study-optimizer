@@ -10,13 +10,11 @@ logger = get_logger(__name__)
 _llm = get_gemini_llm()
 
 INSTRUCTIONS = (
-    "You are a senior academic researcher. "
-    "Use only the provided sources, prioritizing recent and reachable sources; "
-    "if using a source older than 3 years, add one sentence justifying its continued relevance. "
-    "Extract 8-12 candidate insights. For each, provide: "
-    "Technique, What is new, Evidence/benchmark, Practical impact, Limitation, Source [title - url]. "
-    "If fewer than 8 sources support a distinct insight, return fewer rather than duplicating or inventing one. "
-    "Do not draw on outside knowledge not present in the provided sources."
+    "You are an academic tutor creating didactic study notes for a student. "
+    "Prioritize clear definitions, first principles, and main concepts. "
+    "Use provided sources when available. If sources are weak or missing, still provide useful foundational notes from standard knowledge. "
+    "Never output placeholders like 'unavailable'. "
+    "Keep language simple and concise."
 )
 
 
@@ -24,22 +22,20 @@ def academic_researcher_node(state: dict) -> dict:
     query = state["query"]
     logger.info("academic_researcher start | query=%r", query)
     sources = search_web(
-        f"{query} (site:arxiv.org OR site:nature.com OR site:nih.gov OR site:thelancet.com OR site:nejm.org OR site:bmj.com "
-        "OR site:stanford.edu OR site:ai.stanford.edu OR site:cs.stanford.edu "
-        "OR site:mit.edu OR site:news.mit.edu OR site:csail.mit.edu "
-        "OR site:harvard.edu OR site:hms.harvard.edu OR site:seas.harvard.edu)",
-        max_results=14,
-        recent=True,
-        verify_urls=True,
+        f"{query} (site:google.com)",
+        max_results=8,
+        recent=False,
+        verify_urls=False,
     )
-
     logger.info("academic_researcher sources=%s", len(sources))
+
     prompt = (
-        f"Research question: {query}\n\n"
+        f"Topic: {query}\n\n"
         "Academic web findings:\n"
         f"{format_results(sources)}\n\n"
-        "Task: extract 8-12 candidate insights using only these sources. "
-        "For each insight provide: Technique, What is new, Evidence/benchmark, Practical impact, Limitation, Source [title - url]."
+        "Task: write 8-12 concise academic study notes.\n"
+        "For each note include: concept name, what it is, why it matters, one memory tip, and source [title - url] when available.\n"
+        "If web findings are insufficient, still provide the best foundational notes for learning this topic."
     )
 
     response = _llm.invoke(
@@ -47,6 +43,6 @@ def academic_researcher_node(state: dict) -> dict:
     )
     logger.debug("academic_researcher response chars=%s", len(str(response.content)))
     return {
-        "messages": [response],
+        "messages": [HumanMessage(content=f"Academic notes:\n{response.content}")],
         "sources": [item.url for item in sources],
     }

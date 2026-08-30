@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const API_URL = "http://127.0.0.1:8000/api/flashcards";
 
@@ -8,12 +8,33 @@ function App() {
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [progressStep, setProgressStep] = useState(0);
+
+  const progressMessages = [
+    "Understanding your topic...",
+    "Finding good study sources...",
+    "Extracting key theory points...",
+    "Extracting real-world examples...",
+    "Turning notes into simple flashcards...",
+    "Final quality check...",
+  ];
 
   const done = !!deck && index >= deck.cards.length;
   const currentCard = useMemo(() => {
     if (!deck || done) return null;
     return deck.cards[index];
   }, [deck, done, index]);
+
+  useEffect(() => {
+    if (!loading) return;
+
+    setProgressStep(0);
+    const timer = setInterval(() => {
+      setProgressStep((prev) => Math.min(prev + 1, progressMessages.length - 1));
+    }, 3500);
+
+    return () => clearInterval(timer);
+  }, [loading]);
 
   async function generateDeck() {
     if (!topic.trim()) return;
@@ -22,6 +43,7 @@ function App() {
     setError("");
     setDeck(null);
     setIndex(0);
+    setProgressStep(0);
 
     try {
       const response = await fetch(API_URL, {
@@ -47,8 +69,8 @@ function App() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100">
       <div className="mx-auto max-w-3xl px-4 py-10">
-        <h1 className="text-3xl font-bold">Personal Study Optimizer</h1>
-        <p className="mt-2 text-slate-300">Generate 20 flashcards (10 academic + 10 practical).</p>
+        <h1 className="text-3xl font-bold">AI Tutor</h1>
+        <p className="mt-2 text-slate-300">The flashcards generation usually takes 2 to 5 minutes to finish.</p>
 
         <div className="mt-6 flex gap-3">
           <input
@@ -66,11 +88,24 @@ function App() {
           </button>
         </div>
 
+        {loading && (
+          <section className="mt-4 rounded-lg border border-indigo-800 bg-indigo-950/40 p-4">
+            <p className="text-indigo-200 font-medium">{progressMessages[progressStep]}</p>
+            <ol className="mt-3 space-y-1 text-sm text-slate-300">
+              {progressMessages.map((message, i) => (
+                <li key={message}>
+                  {i < progressStep ? "✅" : i === progressStep ? "⏳" : "⬜"} {message}
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
         {error && <p className="mt-4 rounded bg-red-950 p-3 text-red-300">{error}</p>}
 
         {currentCard && (
           <section className="mt-8 rounded-xl border border-slate-800 bg-slate-900 p-6">
-            <p className="text-sm text-slate-400">Card {index + 1} / 20 · {currentCard.category}</p>
+            <p className="text-sm text-slate-400">Card {index + 1} / {deck.cards.length} · {currentCard.category}</p>
             <h2 className="mt-3 text-xl font-semibold">{currentCard.question}</h2>
             <p className="mt-4 text-sm text-slate-400">Source: {currentCard.source || "n/a"}</p>
 
