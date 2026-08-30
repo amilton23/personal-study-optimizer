@@ -51,9 +51,9 @@ class _FakeDeckSummarizer:
 def test_research_graph_handles_empty_search_without_unavailable(monkeypatch) -> None:
     monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
 
-    academic = importlib.import_module("src.agents.academic_researcher")
-    practical = importlib.import_module("src.agents.corporate_researcher")
-    graph_module = importlib.import_module("src.graph.research_graph")
+    academic = importlib.import_module("backend.agents.academic_researcher")
+    practical = importlib.import_module("backend.agents.corporate_researcher")
+    graph_module = importlib.import_module("backend.graph.research_graph")
 
     monkeypatch.setattr(academic, "search_web", lambda *args, **kwargs: [])
     monkeypatch.setattr(practical, "search_web", lambda *args, **kwargs: [])

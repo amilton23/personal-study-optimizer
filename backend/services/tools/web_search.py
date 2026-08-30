@@ -13,7 +13,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 import requests
 from dotenv import find_dotenv, load_dotenv
 
-from src.utils.logs import get_logger
+from backend.services.utils.logs import get_logger
 
 load_dotenv(find_dotenv())
 

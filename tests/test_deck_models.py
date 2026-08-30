@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from src.graph.deck_models import Deck, validate_deck
+from backend.graph.deck_models import Deck, validate_deck
 
 
 def _card(i: int, category: str) -> dict:

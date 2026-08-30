@@ -8,16 +8,16 @@ from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from langgraph.graph import END, StateGraph
 from pydantic import ValidationError
 
-from src.agents.academic_researcher import academic_researcher_node
-from src.agents.corporate_researcher import practical_researcher_node
-from src.graph.deck_models import (
+from backend.agents.academic_researcher import academic_researcher_node
+from backend.agents.corporate_researcher import practical_researcher_node
+from backend.graph.deck_models import (
     Deck,
     pick_random_cards_per_category,
     pick_random_cards_per_category_from_payload,
     validate_deck,
 )
-from src.llm_providers.openai import get_openai_llm
-from src.utils.logs import get_logger
+from backend.services.llm_providers.openai import get_openai_llm
+from backend.services.utils.logs import get_logger
 
 
 class ResearchState(TypedDict):

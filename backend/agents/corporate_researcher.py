@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from src.llm_providers.openai import get_openai_llm
-from src.tools.web_search import format_results, search_web
-from src.utils.logs import get_logger
+from backend.services.llm_providers.openai import get_openai_llm
+from backend.services.tools.web_search import format_results, search_web
+from backend.services.utils.logs import get_logger
 
 logger = get_logger(__name__)
 _llm = get_openai_llm()

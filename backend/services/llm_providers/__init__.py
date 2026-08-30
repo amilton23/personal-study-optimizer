@@ -14,7 +14,7 @@ from ..utils.langsmith import configure_langsmith
 from ..utils.logs import get_logger
 
 load_dotenv(find_dotenv())
-load_dotenv(Path(__file__).resolve().parents[2] / ".env" / ".env")
+load_dotenv(Path(__file__).resolve().parents[3] / ".env" / ".env")
 
 # Ensure LangSmith tracing behavior is normalized before model clients are created.
 configure_langsmith()

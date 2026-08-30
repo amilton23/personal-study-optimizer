@@ -3,8 +3,8 @@
 Agentic study app that researches a topic, builds a validated 20-card deck, and serves a quiz UI.
 
 - Backend: Python + LangGraph + LangChain (OpenRouter models)
-- Frontend: React + Vite + Tailwind (`flashcards-web/`)
-- Output contract: **exactly 20 flashcards** (`10 academic + 10 practical`)
+- Frontend: React + Vite + Tailwind (`frontend/`)
+- Output contract: up to 20 flashcards (max 10 per category)
 
 ---
 
@@ -38,13 +38,13 @@ start_query
 
 Core files:
 
-- `src/graph/research_graph.py` - graph nodes, edges, retry routing
-- `src/graph/deck_models.py` - deck schema + deterministic validator
-- `src/agents/academic_researcher.py` - academic branch prompt + search
-- `src/agents/corporate_researcher.py` - practical branch prompt + search
-- `src/tools/web_search.py` - Tavily + RSS + DuckDuckGo with freshness/reachability
-- `src/api_server.py` - FastAPI endpoint for web app
-- `flashcards-web/src/App.jsx` - quiz interface
+- `backend/graph/research_graph.py` - graph nodes, edges, retry routing
+- `backend/graph/deck_models.py` - deck schema + deterministic validator
+- `backend/agents/academic_researcher.py` - academic branch prompt + search
+- `backend/agents/corporate_researcher.py` - practical branch prompt + search
+- `backend/services/tools/web_search.py` - Tavily + RSS + DuckDuckGo with freshness/reachability
+- `backend/api/server.py` - FastAPI endpoint for web app
+- `frontend/src/App.jsx` - quiz interface
 
 ---
 
@@ -63,7 +63,7 @@ pip install -e .
 Install frontend deps:
 
 ```bash
-cd flashcards-web
+cd frontend
 npm install
 ```
 
@@ -112,7 +112,7 @@ Prints final validated deck JSON.
 ### 2) API (backend)
 
 ```bash
-uvicorn src.api_server:app --reload --port 8000
+uvicorn backend.api.server:app --reload --port 8000
 ```
 
 Health check:
@@ -124,7 +124,7 @@ curl http://127.0.0.1:8000/health
 ### 3) Web app (frontend)
 
 ```bash
-cd flashcards-web
+cd frontend
 npm run dev
 ```
 
@@ -175,19 +175,18 @@ Failure response (`422`) when deck still invalid after retries:
 
 ## Validation rules
 
-Enforced in `src/graph/deck_models.py` and graph validator node:
+Enforced in `backend/graph/deck_models.py` and graph validator node:
 
 - schema-level:
   - card id in `1..20`
   - category in `{academic, practical}`
-  - deck length exactly `20`
+  - deck length up to `20`
 - business-level:
-  - exactly `10` academic + `10` practical
+  - up to `10` academic + up to `10` practical
 
 If invalid:
-- append concrete errors to feedback
-- regenerate in summarizer node
-- retry up to 3 times
+- attempt random fallback selection first
+- retry generation only if still invalid
 
 ---
 

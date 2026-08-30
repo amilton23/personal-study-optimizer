@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from src.graph.research_graph import research_graph
+from backend.graph.research_graph import research_graph
 
 
 class DeckRequest(BaseModel):

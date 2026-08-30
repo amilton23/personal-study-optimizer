@@ -1,7 +1,7 @@
 [project]
 name = "personal-study-optimizer"
-version = "1.0.0"
-description = "Personal Study Optimizer with LangGraph to generate flashcards"
+version = "1.1.0"
+description = "Personal Study Optimizer with LangGraph to tutor a student"
 readme = "README.md"
 requires-python = ">=3.11"
 
@@ -30,4 +30,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["src*"]
+include = ["backend*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

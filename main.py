@@ -1,8 +1,8 @@
 import os
 import sys
 
-from src.graph.research_graph import research_graph
-from src.utils.logs import get_logger
+from backend.graph.research_graph import research_graph
+from backend.services.utils.logs import get_logger
 
 logger = get_logger(__name__)
 
